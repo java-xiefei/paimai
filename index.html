@@ -1,10 +1,117 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="utf-8" />
-		<title></title>
+		<title>商品拍卖系统首页</title>
+		<link rel="stylesheet" href="css/index.css" />
+		<script type="text/javascript" src="js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="js/jq_ajax_config.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<style>
+			.el-header,
+			.el-footer {
+				background: gainsboro;
+				font-size: 30px;
+			}
+			
+			.el-menu {
+				border: 0px;
+			}
+			
+			a {
+				text-decoration: none;
+			}
+			
+			[v-cloak] {
+				display: none;
+			}
+			
+			#indxApp {
+				width: 100%;
+				height: 100%;
+			}
+			
+			* {
+				margin: 0px;
+				padding: 0px;
+			}
+		</style>
 	</head>
+
 	<body>
-		<h1>第一次创建仓库</h1>
+		<div id="indxApp" v-cloak>
+			<el-container style='height:100%;'>
+				<el-header style='height:10%;text-align: center;color: brown;'>商品拍卖管理系统</el-header>
+				<el-container>
+					<el-aside width="200px" style="margin-top: 20px;">
+						<p style="text-align: center;">欢迎<span style="color: red;">admin</span>登录成功</p>
+						<p style="text-align: center;font-size: 13px;">
+							<a href="#">[ 安全退出 ]</a>&nbsp;
+							<a href="#">[ 首页 ]</a>
+						</p>
+						<el-menu>
+							<el-submenu index="1">
+								<template slot="title">
+									<i class="el-icon-setting"></i>
+									<span>会员管理</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="1-1" @click="showView('addManager.html')"><i class="el-icon-message"></i>添加管理员</el-menu-item>
+									<el-menu-item index="1-2" @click="showView('showUserList.html')"><i class="el-icon-message"></i>用户管理</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							<el-submenu index="2">
+								<template slot="title">
+									<i class="el-icon-s-tools"></i>
+									<span>商品管理</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="2-1" @click="showView('pmplb.html')"><i class="el-icon-message"></i>拍卖品列表页</el-menu-item>
+									<el-menu-item index="2-2" @click="showView('ckjpjg.html')"><i class="el-icon-message"></i>查看竞拍结果</el-menu-item>
+									<el-menu-item index="2-3" @click="showView('pmspgl.html')"><i class="el-icon-message"></i>拍卖商品管理页</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							<!--<el-menu-item index="3">
+								<i class="el-icon-setting"></i>
+								<span slot="title" @click="">系统设置</span>
+							</el-menu-item>-->
+						</el-menu>
+					</el-aside>
+					<el-main>
+						<div id="cnt"></div>
+					</el-main>
+				</el-container>
+			</el-container>
+			<!--============================黄金分割线======================================-->
+			<el-dialog @opened="handlerOpen" title="远程页面模态框" :visible.sync="isShow2" width="30%" :before-close="handleClose2" center>
+				<div id="cnnt">ajax加载远程页面</div>
+				<span slot="footer" class="dialog-footer">
+	    			<el-button @click="isShow2 = false">取 消</el-button>
+	    			<el-button type="primary" @click="isShow2 = false">确 定</el-button>
+  				</span>
+			</el-dialog>
+		</div>
 	</body>
+	<script type="text/javascript" src="js/index.js"></script>
+	<script>
+		var indexApp = new Vue({
+			data: {
+				isShow2: false,
+				url: ''
+			},
+			methods: {
+				showView(url) {
+					$('#cnt').load(url);
+				},
+				handleClose2(done) {
+					done();
+				},
+				handlerOpen() {
+					$("#cnnt").load(this.url); //ajax读取页面
+				}
+			}
+		}).$mount('#indxApp');
+	</script>
+
 </html>

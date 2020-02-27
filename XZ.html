@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			* {
+				margin: 0px;
+				padding: 0px;
+			}
+			
+			#XZ {
+				width: 100%;
+				height: 100%;
+				/*border: #7EABAB solid 1px;*/
+				margin: auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="XZ">
+			<h1 style="font: 24px Arial,宋体;display: inline-block;">在线拍卖系统</h1>
+			<el-button size="small" type="primary" plain style="margin-left: 919px;">注销</el-button>
+			<hr/>
+			<div style="margin-left: 200px;">
+			<h1 style="font: 26px arial,宋体;color: #0096ff;margin-top: 20px;">拍卖品信息</h1>
+
+			<el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" style="margin-top: 20px;">
+				<el-form-item label="名称：" prop="name">
+					<el-col :span="10">
+						<el-input type="text" v-model="ruleForm.name" autocomplete="off" placeholder="请输入名称"></el-input>
+						<el-col/>
+				</el-form-item>
+				<el-form-item label="起拍价：" prop="qpj">
+					<el-col :span="10">
+						<el-input type="text" v-model.number="ruleForm.qpj" autocomplete="off" placeholder="请输入名称起拍价"></el-input>
+						<el-col/>
+				</el-form-item>
+				<el-form-item label="底价：" prop="dj">
+					<el-col :span="10">
+						<el-input v-model.number="ruleForm.dj" placeholder="请输入底价"></el-input>
+						<el-col/>
+				</el-form-item>
+				<!--开始日期组件-->
+				<el-form-item label="开始日期:" required>
+					<el-col :span="5">
+						<el-form-item prop="date1">
+							<el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+						</el-form-item>
+					</el-col>
+					<el-col class="line" :span="2">-</el-col>
+					<el-col :span="5" style="margin-left: -60px;">
+						<el-form-item prop="date2">
+							<el-time-picker placeholder="选择时间" v-model="ruleForm.date2" style="width: 100%;"></el-time-picker>
+						</el-form-item>
+					</el-col>
+				</el-form-item>
+				<!--结束日期组件-->
+				<el-form-item label="结束日期:" required>
+					<el-col :span="5">
+						<el-form-item prop="date3">
+							<el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date3" style="width: 100%;"></el-date-picker>
+						</el-form-item>
+					</el-col>
+					<el-col class="line" :span="2">-</el-col>
+					<el-col :span="5" style="margin-left: -60px;">
+						<el-form-item prop="date4">
+							<el-time-picker placeholder="选择时间" v-model="ruleForm.date4" style="width: 100%;"></el-time-picker>
+						</el-form-item>
+					</el-col>
+				</el-form-item>
+				<!--文件上传组件-->
+				<el-form-item label="拍卖品图片:" style="margin-left: 13px;" prop="fileList">
+					<el-col :span="10">
+						<el-upload class="upload-demo" :before-upload="handleBefore" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
+							<el-button size="small" type="primary">点击上传</el-button>
+							<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+						</el-upload>
+					</el-col>
+				</el-form-item>
+				<el-form-item label="描述:">
+					<el-col :span="12">
+						<el-input type="textarea" :autosize="{ minRows: 4, maxRows: 5}" placeholder="请输入内容" v-model="ruleForm.ms">
+						</el-input>
+					</el-col>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+					<el-button>取消</el-button>
+				</el-form-item>
+			</el-form>
+			</div>
+		</div>
+	</body>
+	<script>
+		var XZ = new Vue({
+			el: '#XZ',
+			data: { //绑定表单
+				ruleForm: {
+					name: '',
+					qpj: '',
+					dj: '',
+					date1: '',
+					date2: '',
+					date3: '',
+					date4: '',
+					tp: '',
+					ms: ''
+				},
+				fileList: [],
+				rules: { //验证判断
+					name: [{
+						required: true,
+						message: '请输入名称',
+						trigger: 'blur'
+					}],
+					qpj: [{
+							required: true,
+							message: '请输入起拍价',
+							trigger: 'blur'
+						},
+						{
+							type: 'number',
+							message: '起拍价必须为数字值'
+						}
+					],
+					dj: [{
+							required: true,
+							message: '请输入底价',
+							trigger: 'blur'
+						},
+						{
+							type: 'number',
+							message: '底价必须为数字值'
+						}
+					],
+					date1: [{
+						type: 'date',
+						required: true,
+						message: '请选择日期',
+						trigger: 'change'
+					}],
+					date2: [{
+						type: 'date',
+						required: true,
+						message: '请选择时间',
+						trigger: 'change'
+					}],
+					date3: [{
+						type: 'date',
+						required: true,
+						message: '请选择日期',
+						trigger: 'change'
+					}],
+					date4: [{
+						type: 'date',
+						required: true,
+						message: '请选择时间',
+						trigger: 'change'
+					}]
+				},
+				fd: []
+			},
+			methods: { //前两个方法为上传文件的方法
+				handleRemove(file, fileList) {
+					console.log(file, fileList);
+				},
+				handlePreview(file) {
+					console.log(file);
+				},
+				handleBefore(file) {
+					console.log(file.name);
+					this.ruleForm.tp=file.name;
+				},
+				submitForm(formName) {
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							if(this.ruleForm.tp=="") {
+								console.info(this.ruleForm.tp);
+								this.$alert('请上传图片！', '系统提示');
+								return;
+							} else if(this.ruleForm.ms == "") {
+								this.$alert('请描述商品！', '系统提示');
+								return;
+							}
+							//验证通过
+							//自定义加载块
+							const loading = this.$loading({
+								lock: true,
+								text: '努力更新中....',
+								spinner: 'el-icon-loading',
+								background: 'rgba(0, 0, 0, 0.5)'
+							});
+							//延迟2秒，模拟网络延迟
+							setTimeout(() => {
+								//alert('submit!');
+								this.$alert('登录成功！', '系统提示');
+								loading.close(); //关闭加载块【非常重要】
+							}, 2000);
+						} else {
+							console.log('error submit!!');
+							//验证失败
+							this.$alert('请填写完整信息', '系统提示');
+							return false;
+						}
+					});
+				}
+			}
+		})
+	</script>
+
+</html>

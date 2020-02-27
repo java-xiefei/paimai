@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			* {
+				margin: 0px;
+				padding: 0px;
+			}
+			
+			#jpy {
+				width: 100%;
+				height: 100%;
+				/*border: #7EABAB solid 1px;*/
+				margin: auto;
+			}
+			
+			.mailTable,
+			.mailTable tr,
+			.mailTable tr td {
+				border: 1px solid #E6EAEE;
+			}
+			
+			.mailTable {
+				font-size: 12px;
+				color: #71787E;
+			}
+			
+			.mailTable tr td {
+				border: 1px solid #E6EAEE;
+				width: 150px;
+				height: 35px;
+				line-height: 35px;
+				box-sizing: border-box;
+				padding: 0 10px;
+			}
+			
+			.mailTable tr td.column {
+				background-color: #EFF3F6;
+				color: #393C3E;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="jpy">
+			<h1 style="font: 24px Arial,宋体;display: inline-block;">在线拍卖系统</h1>
+			<el-button size="small" type="primary" plain style="margin-left: 902px;">注销</el-button>
+			<hr/>
+			<template>
+				<table class="mailTable" style="margin-top: 30px;">
+					<tr v-for="(temp,i) in tableData">
+						<td class="column" style="text-align: center;">{{temp.key}}</td>
+						<td style="width: 400px;text-align: center;">{{temp.value}}</td>
+					</tr>
+				</table>
+			</template>
+			<img src="img/ad20.jpg" style="position: absolute;top:150px;right: 20px;" />
+			<div style="width: 100%;height: 60px;border: #5A5A5A solid 1px;margin-top: 20px;">
+				<el-form :model="ruleForm" :inline="true" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+					<el-form-item label="出价 :" prop="name">
+						<el-input type="text" size="small" autocomplete="off" placeholder="请出价" v-model="ruleForm.name">
+					</el-form-item>
+					<el-form-item>
+						<el-button size="small" type="primary" @click="jingpai">竞拍</el-button>
+					</el-form-item>
+				</el-form>
+			</div>
+			<br />
+			<el-button type="primary">刷新</el-button>
+			<el-button type="primary">返回列表</el-button>
+			<h3 style="color: #5A5A5A;font: 14.04px Arial,宋体;margin-top: 30px;">出价记录</h3>
+			<br />
+			<template>
+				<el-table :data="tableData2" border style="width: 100%">
+					<el-table-column prop="jpsj" label="竞拍时间" width="180">
+
+					</el-table-column>
+					<el-table-column prop="jpjg" label="竞拍价格" width="180">
+
+					</el-table-column>
+					<el-table-column prop="jpr" label="竞拍人">
+
+					</el-table-column>
+				</el-table>
+			</template>
+		</div>
+	</body>
+	<script>
+		var jpy = new Vue({
+			el: '#jpy',
+			data: {
+				rules: {
+					name: [{
+						required: true,
+						message: '请出价',
+						trigger: 'blur'
+					}]
+				},
+				ruleForm: {
+					name: ''
+				},
+				tableData: [{ //拍卖详情名称
+						key: '名称：',
+						value: '花瓶'
+					},
+					{
+						key: '描述：',
+						value: '古董'
+					},
+					{
+						key: '开始时间：',
+						value: '2010-01-01 16:30:00'
+					},
+					{
+						key: '结束时间：',
+						value: '2010-02-02 16:30:00'
+					},
+					{
+						key: '起拍价：',
+						value: '2000'
+					}
+				],
+				tableData2: [ //出价格记录
+					{
+						jpsj: '2010-01-05 12:50:01',
+						jpjg: '50000,00',
+						jpr: '张三'
+					},
+					{
+						jpsj: '2010-01-05 11:50:01',
+						jpjg: '40000,00',
+						jpr: '李四'
+					},
+					{
+						jpsj: '2010-01-05 10:50:01',
+						jpjg: '30000,00',
+						jpr: '王五'
+					},
+					{
+						jpsj: '2010-01-05 09:50:01',
+						jpjg: '20000,00',
+						jpr: '李靖'
+					}
+				]
+			},
+			methods: {
+				jingpai() {
+					if(this.ruleForm.name == "") {
+						this.$alert('请出价！', '系统提示');
+						return;
+					} else if(this.ruleForm.name < this.tableData[4].value) {
+						this.$alert('不能低于最高竞拍价！', '系统提示');
+						return;
+					}
+					//自定义加载块
+					const loading = this.$loading({
+						lock: true,
+						text: '努力更新中....',
+						spinner: 'el-icon-loading',
+						background: 'rgba(0, 0, 0, 0.5)'
+					});
+					//延迟2秒，模拟网络延迟
+					setTimeout(() => {
+						//alert('submit!');
+						this.$alert('竞拍成功！', '系统提示');
+						loading.close(); //关闭加载块【非常重要】
+					}, 2000);
+				}
+			}
+		})
+	</script>
+
+</html>

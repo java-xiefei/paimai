@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			#v_container {
+				position: absolute;
+				left: 740px;
+				top: 473px;
+			}		
+			[v-cloak]{
+				display: none;
+			}	
+		</style>
+		<link rel="stylesheet" href="css/index.css" />
+		<script type="text/javascript" src="js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="js/jq_ajax_config.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<script type="text/javascript" src="js/gVerify.js"></script>
+		<script type="text/javascript" src="js/TP.js"></script>
+	</head>
+
+	<body>
+		<div id="register" v-cloak>
+			<div style="margin-left: 500px;margin-top: 50px;">
+			<h2 style="color: #0096FF;">用户注册</h2>
+			<el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+				<el-form-item label="用户名：" prop="name">
+					<el-col :span="8">
+						<el-input type="text" v-model="ruleForm.name" autocomplete="off" placeholder="用户名"></el-input>
+						<el-col/>
+				</el-form-item>
+				<el-form-item label="密码：" prop="checkPass">
+					<el-col :span="8">
+						<el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="密码"></el-input>
+						<el-col/>
+				</el-form-item>
+				<el-form-item label="身份证号：" prop="sfzh">
+					<el-col :span="8">
+						<el-input type="text" v-model="ruleForm.sfzh" autocomplete="off" placeholder="身份证号"></el-input>
+						<el-col/>
+				</el-form-item>
+				<el-form-item label="电话：" prop="dh">
+					<el-col :span="8">
+						<el-input type="text" v-model="ruleForm.dh" autocomplete="off" placeholder="电话"></el-input>
+						<el-col/>
+				</el-form-item>
+				<el-form-item label="住址：" prop="dz">
+					<el-col :span="8">
+						<el-input type="text" v-model="ruleForm.dz" autocomplete="off" placeholder="住址"></el-input>
+						<el-col/>
+				</el-form-item>
+				<el-form-item label="邮政编码：" prop="yzbm">
+					<el-col :span="8">
+						<el-input type="text" v-model="ruleForm.yzbm" autocomplete="off" placeholder="邮政编码"></el-input>
+						<el-col/>
+				</el-form-item>
+				<el-form-item label="验证码：" prop="region">
+					<el-col :span="4">
+						<el-input v-model="ruleForm.region" placeholder="验证码"></el-input>
+						<el-col/>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="submitForm('ruleForm')">立即注册</el-button>
+				</el-form-item>
+			</el-form>
+			</div>
+		</div>
+		<div id="v_container" style="width: 132px;height: 40px;"></div>
+	</body>
+	<script type="text/javascript" src="js/index.js"></script>
+	<script>
+		var verifyCode = new GVerify("v_container");
+		var vm = new Vue({
+			el: '#register',
+			data: {
+				ruleForm: {
+					name: '',
+					checkPass: '',
+					sfzh: '',
+					dh: '',
+					dz: '',
+					yzbm: '',
+					region: ''
+				},
+				rules: {
+					name: [{
+							required: true,
+							message: '请输入用户名',
+							trigger: 'blur'
+						},
+						{
+							min: 6,
+							message: '用户名要求不低于6个字符',
+							trigger: 'blur'
+						}
+					],
+					checkPass: [{
+						required: true,
+						message: '请输入密码',
+						trigger: 'blur'
+					},{
+							min: 6,
+							message: '密码要求不低于6个字符',
+							trigger: 'blur'
+						}],
+					sfzh: [{
+						required: true,
+						message: '身份证号必填',
+						trigger: 'blur'
+					},
+					{
+							min: 18,
+							max: 18,
+							message: '身份证号为18个字符',
+							trigger: 'blur'
+						}
+					],
+					dh: [{
+						required: true,
+						message: '电话号码必填',
+						trigger: 'blur'
+					},
+					{
+							min: 11,
+							max: 11,
+							message: '电话号码为11个字符',
+							trigger: 'blur'
+						}],
+					dz: [{
+						required: true,
+						message: '请输入地址',
+						trigger: 'blur'
+					}],
+					yzbm: [{
+						required: true,
+						message: '请输入邮政编码',
+						trigger: 'blur'
+					}],
+					region: [{
+						required: true,
+						message: '请输入验证码',
+						trigger: 'blur'
+					}]
+				}
+			},
+			methods: {
+				submitForm(formName) {
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							let res = verifyCode.validate(this.ruleForm.region); //验证验证码
+							if(res) {
+								
+							} else {
+								this.$alert('验证码错误！', '系统提示');
+								return;
+							}
+							//验证通过
+							//自定义加载块
+							const loading = this.$loading({
+								lock: true,
+								text: '努力更新中....',
+								spinner: 'el-icon-loading',
+								background: 'rgba(0, 0, 0, 0.5)'
+							});
+							//延迟2秒，模拟网络延迟
+							setTimeout(() => {
+								//alert('submit!');
+								this.$alert('注册成功！', '系统提示');
+								loading.close(); //关闭加载块【非常重要】
+							}, 2000);
+						} else {
+							console.log('error submit!!');
+							//验证失败
+							this.$alert('请填写完整信息', '系统提示');
+							return false;
+						}
+					});
+				}
+			}
+		})
+	</script>
+
+</html>
