@@ -9,10 +9,11 @@
 				position: absolute;
 				left: 740px;
 				top: 473px;
-			}		
-			[v-cloak]{
+			}
+			
+			[v-cloak] {
 				display: none;
-			}	
+			}
 		</style>
 		<link rel="stylesheet" href="css/index.css" />
 		<script type="text/javascript" src="js/jquery-1.12.4.js"></script>
@@ -25,47 +26,47 @@
 	<body>
 		<div id="register" v-cloak>
 			<div style="margin-left: 500px;margin-top: 50px;">
-			<h2 style="color: #0096FF;">用户注册</h2>
-			<el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-				<el-form-item label="用户名：" prop="name">
-					<el-col :span="8">
-						<el-input type="text" v-model="ruleForm.name" autocomplete="off" placeholder="用户名"></el-input>
-						<el-col/>
-				</el-form-item>
-				<el-form-item label="密码：" prop="checkPass">
-					<el-col :span="8">
-						<el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="密码"></el-input>
-						<el-col/>
-				</el-form-item>
-				<el-form-item label="身份证号：" prop="sfzh">
-					<el-col :span="8">
-						<el-input type="text" v-model="ruleForm.sfzh" autocomplete="off" placeholder="身份证号"></el-input>
-						<el-col/>
-				</el-form-item>
-				<el-form-item label="电话：" prop="dh">
-					<el-col :span="8">
-						<el-input type="text" v-model="ruleForm.dh" autocomplete="off" placeholder="电话"></el-input>
-						<el-col/>
-				</el-form-item>
-				<el-form-item label="住址：" prop="dz">
-					<el-col :span="8">
-						<el-input type="text" v-model="ruleForm.dz" autocomplete="off" placeholder="住址"></el-input>
-						<el-col/>
-				</el-form-item>
-				<el-form-item label="邮政编码：" prop="yzbm">
-					<el-col :span="8">
-						<el-input type="text" v-model="ruleForm.yzbm" autocomplete="off" placeholder="邮政编码"></el-input>
-						<el-col/>
-				</el-form-item>
-				<el-form-item label="验证码：" prop="region">
-					<el-col :span="4">
-						<el-input v-model="ruleForm.region" placeholder="验证码"></el-input>
-						<el-col/>
-				</el-form-item>
-				<el-form-item>
-					<el-button type="primary" @click="submitForm('ruleForm')">立即注册</el-button>
-				</el-form-item>
-			</el-form>
+				<h2 style="color: #0096FF;">用户注册</h2>
+				<el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+					<el-form-item label="用户名：" prop="name">
+						<el-col :span="8">
+							<el-input type="text" v-model="ruleForm.name" autocomplete="off" placeholder="用户名"></el-input>
+							<el-col/>
+					</el-form-item>
+					<el-form-item label="密码：" prop="checkPass">
+						<el-col :span="8">
+							<el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" placeholder="密码"></el-input>
+							<el-col/>
+					</el-form-item>
+					<el-form-item label="身份证号：" prop="sfzh">
+						<el-col :span="8">
+							<el-input type="text" v-model="ruleForm.sfzh" autocomplete="off" placeholder="身份证号"></el-input>
+							<el-col/>
+					</el-form-item>
+					<el-form-item label="电话：" prop="dh">
+						<el-col :span="8">
+							<el-input type="text" v-model="ruleForm.dh" autocomplete="off" placeholder="电话"></el-input>
+							<el-col/>
+					</el-form-item>
+					<el-form-item label="住址：" prop="dz">
+						<el-col :span="8">
+							<el-input type="text" v-model="ruleForm.dz" autocomplete="off" placeholder="住址"></el-input>
+							<el-col/>
+					</el-form-item>
+					<el-form-item label="邮政编码：" prop="yzbm">
+						<el-col :span="8">
+							<el-input type="text" v-model="ruleForm.yzbm" autocomplete="off" placeholder="邮政编码"></el-input>
+							<el-col/>
+					</el-form-item>
+					<el-form-item label="验证码：" prop="region">
+						<el-col :span="4">
+							<el-input v-model="ruleForm.region" placeholder="验证码"></el-input>
+							<el-col/>
+					</el-form-item>
+					<el-form-item>
+						<el-button type="primary" @click="submitForm('ruleForm')">立即注册</el-button>
+					</el-form-item>
+				</el-form>
 			</div>
 		</div>
 		<div id="v_container" style="width: 132px;height: 40px;"></div>
@@ -85,6 +86,15 @@
 					yzbm: '',
 					region: ''
 				},
+				auctionuser: {
+					aid: '',
+					aname: '',
+					apassword: '',
+					acardno: '',
+					atel: '',
+					aaddress: '',
+					apostnumber: ''
+				},
 				rules: {
 					name: [{
 							required: true,
@@ -101,17 +111,17 @@
 						required: true,
 						message: '请输入密码',
 						trigger: 'blur'
-					},{
-							min: 6,
-							message: '密码要求不低于6个字符',
-							trigger: 'blur'
-						}],
-					sfzh: [{
-						required: true,
-						message: '身份证号必填',
+					}, {
+						min: 6,
+						message: '密码要求不低于6个字符',
 						trigger: 'blur'
-					},
-					{
+					}],
+					sfzh: [{
+							required: true,
+							message: '身份证号必填',
+							trigger: 'blur'
+						},
+						{
 							min: 18,
 							max: 18,
 							message: '身份证号为18个字符',
@@ -119,16 +129,17 @@
 						}
 					],
 					dh: [{
-						required: true,
-						message: '电话号码必填',
-						trigger: 'blur'
-					},
-					{
+							required: true,
+							message: '电话号码必填',
+							trigger: 'blur'
+						},
+						{
 							min: 11,
 							max: 11,
 							message: '电话号码为11个字符',
 							trigger: 'blur'
-						}],
+						}
+					],
 					dz: [{
 						required: true,
 						message: '请输入地址',
@@ -148,29 +159,61 @@
 			},
 			methods: {
 				submitForm(formName) {
+					let _this = this;
 					this.$refs[formName].validate((valid) => {
 						if(valid) {
 							let res = verifyCode.validate(this.ruleForm.region); //验证验证码
 							if(res) {
-								
+
 							} else {
 								this.$alert('验证码错误！', '系统提示');
 								return;
 							}
-							//验证通过
-							//自定义加载块
-							const loading = this.$loading({
-								lock: true,
-								text: '努力更新中....',
-								spinner: 'el-icon-loading',
-								background: 'rgba(0, 0, 0, 0.5)'
-							});
-							//延迟2秒，模拟网络延迟
-							setTimeout(() => {
-								//alert('submit!');
-								this.$alert('注册成功！', '系统提示');
-								loading.close(); //关闭加载块【非常重要】
-							}, 2000);
+							let _this = this;
+							$.ajax(`http://127.0.0.1:8080/api/paimais/yz/${_this.ruleForm.name}`, {
+								type: "get",
+								success(data) {
+									if(data != "") {
+										alert("此用户名已被使用!请重新输入一个用户名");
+										return;
+									} else {
+										_this.auctionuser.aid = '0';
+										_this.auctionuser.aname = _this.ruleForm.name;
+										_this.auctionuser.apassword = _this.ruleForm.checkPass;
+										_this.auctionuser.acardno = _this.ruleForm.sfzh;
+										_this.auctionuser.atel = _this.ruleForm.dh;
+										_this.auctionuser.aaddress = _this.ruleForm.dz;
+										_this.auctionuser.apostnumber = _this.ruleForm.yzbm;
+										console.log(_this.auctionuser);
+										$.ajax(`http://127.0.0.1:8080/api/paimais/zxyh`, {
+											type: 'post',
+											contentType: 'application/json',
+											data: JSON.stringify(_this.auctionuser),
+											dataType: 'json',
+											success(msg) {
+												if(msg.code == "200") {
+													//验证通过
+													//自定义加载块
+													const loading = _this.$loading({
+														lock: true,
+														text: '努力更新中....',
+														spinner: 'el-icon-loading',
+														background: 'rgba(0, 0, 0, 0.5)'
+													});
+													//延迟2秒，模拟网络延迟
+													setTimeout(() => {
+														//alert('submit!');
+														alert('注册成功！为你跳转到登录界面', '系统提示');
+														window.location.href="login.html";
+														loading.close(); //关闭加载块【非常重要】
+													}, 2000);	
+												}
+											}
+										})
+									}
+								}
+							})
+
 						} else {
 							console.log('error submit!!');
 							//验证失败

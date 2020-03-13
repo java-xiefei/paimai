@@ -61,7 +61,7 @@
 							</el-form-item>
 							<el-form-item>
 								<el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
-								<el-button>注册</el-button>&nbsp;&nbsp;&nbsp;
+								<el-button @click="zc">注册</el-button>&nbsp;&nbsp;&nbsp;
 								<a href="#">忘记密码？</a>
 							</el-form-item>
 						</el-form>
@@ -102,29 +102,45 @@
 			},
 			methods: {
 				submitForm(formName) {
+					let _this = this;
 					this.$refs[formName].validate((valid) => {
 						if(valid) {
 							let res = verifyCode.validate(this.ruleForm.region); //验证验证码
 							if(res) {
-								
+								$.ajax(`http://127.0.0.1:8080/api/paimais/${_this.ruleForm.name}/${_this.ruleForm.checkPass}`,{
+									type:'get',
+									success(data){
+										if(data!=null&&data!=""){
+										sessionStorage.setItem("DATA",JSON.stringify(data));
+										//验证通过
+										//自定义加载块
+										const loading = _this.$loading({
+											lock: true,
+											text: '努力更新中....',
+											spinner: 'el-icon-loading',
+											background: 'rgba(0, 0, 0, 0.5)'
+										});
+										//延迟2秒，模拟网络延迟
+										setTimeout(() => {
+											//alert('submit!');
+											alert('登录成功！你将前往商品首页');
+											location.href="index.html"
+											loading.close(); //关闭加载块【非常重要】											
+										}, 2000);	
+									}else{
+										_this.$alert("用户名或密码错误！");
+									}
+									},
+									error(XMLHttpRequest, textStatus, errorThrown){
+										console.log(XMLHttpRequest.status);//状态码
+       									console.log(XMLHttpRequest.readyState);//状态
+       									console.log(textStatus);//错误信息
+									}
+								});
 							} else {
 								this.$alert('验证码错误！', '系统提示');
 								return;
 							}
-							//验证通过
-							//自定义加载块
-							const loading = this.$loading({
-								lock: true,
-								text: '努力更新中....',
-								spinner: 'el-icon-loading',
-								background: 'rgba(0, 0, 0, 0.5)'
-							});
-							//延迟2秒，模拟网络延迟
-							setTimeout(() => {
-								//alert('submit!');
-								this.$alert('登录成功！', '系统提示');
-								loading.close(); //关闭加载块【非常重要】
-							}, 2000);
 						} else {
 							console.log('error submit!!');
 							//验证失败
@@ -132,6 +148,9 @@
 							return false;
 						}
 					});
+				},
+				zc(){
+					window.location.href="register.html";
 				}
 			}
 		})

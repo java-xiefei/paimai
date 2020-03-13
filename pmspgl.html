@@ -54,7 +54,7 @@
 					</el-col>
 				</el-form-item>
 				<el-form-item style="margin-left: -50px;">
-					<el-button size="small" type="primary" style="">查询</el-button>
+					<el-button @click="cx" size="small" type="primary" style="">查询</el-button>
 				</el-form-item>
 				<el-form-item style="margin-top: -20px;">
 					<el-button size="small" type="primary" @click="fb"  style="">发布</el-button>
@@ -63,30 +63,33 @@
 
 			<template>
 				<el-table :data="table" border style="width: 100%;margin-top: -20px;" :row-style="{height:'38px'}" :cell-style="{padding:'0px'}">
-					<el-table-column align='center' prop="name" label="名称" width="180">{{table.name}}</el-table-column>
-					<el-table-column align='center' prop="ms" label="描述" width="180">{{table.ms}}</el-table-column>
-					<el-table-column align='center' prop="kssj" label="开始时间">{{table.kssj}}</el-table-column>
-					<el-table-column align='center' prop="jssj" label="结束时间">{{table.jssj}}</el-table-column>
-					<el-table-column align='center' prop="qpj" label="起拍价">{{table.qpj}}</el-table-column>
+					<el-table-column align='center' prop="auctionname" label="名称" width="180">{{table.auctionname}}</el-table-column>
+					<el-table-column align='center' prop="auctiondesc" label="描述" width="180">{{table.auctiondesc}}</el-table-column>
+					<el-table-column align='center' prop="auctionstarttime" label="开始时间">{{table.auctionstarttime}}</el-table-column>
+					<el-table-column align='center' prop="auctionendtime" label="结束时间">{{table.auctionendtime}}</el-table-column>
+					<el-table-column align='center' prop="auctionstartprice" label="起拍价">{{table.auctionstartprice}}</el-table-column>
 					<el-table-column align='center' prop="address" label="操作">
 						<!--作用域插槽(具名)-->
 						<template slot-scope="temp">
-							<a href="#" @click="xiugai" style="color: red;text-decoration:none;">修改</a>
+							<a href="#" @click="xiugai(temp.row.auctionid)" style="color: red;text-decoration:none;">修改</a>
 							<span>  </span>
-							<a href="#" style="color: red;text-decoration:none;">删除</a>
+							<a href="#" @click="shanchu(temp.row.auctionid)" style="color: red;text-decoration:none;">删除</a>
 						</template>
 					</el-table-column>
 				</el-table>
 			</template>
 			<br />
-			<el-pagination background layout="prev, pager, next" :total="zys" style="margin-left: 335px;"></el-pagination>
+			<el-pagination  @size-change="handleSizeChange" @current-change="handleCurrentChange" background layout="prev, pager, next" :total="zys" style="margin-left: 335px;"></el-pagination>
 		</div>
 	</body>
 	<script>
 		var pmspgl = new Vue({
 			el: '#pmspgl',
 			data: {
-				zys: 500,
+				zys:100,
+				sj:'',
+				page:{},
+				data:{},
 				input: {
 					name: '',
 					ms: '',
@@ -94,37 +97,7 @@
 					jssj: '',
 					qpj: ''
 				},
-				table: [{
-					name: '国书',
-					ms: '民国藏书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000'
-				}, {
-					name: '国书',
-					ms: '民国藏书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000'
-				}, {
-					name: '国书',
-					ms: '民国藏书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000'
-				}, {
-					name: '国书',
-					ms: '民国藏书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000'
-				}, {
-					name: '国书',
-					ms: '民国藏书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000'
-				}]
+				table: []
 			},
 			methods: {
 				jingpai() {
@@ -133,9 +106,86 @@
 				fb(){
 					indexApp.showView('XZ.html');
 				},
-				xiugai(){
+				xiugai(id){
+					window.sessionStorage.setItem("xgid",JSON.stringify(id));
 					indexApp.showView('XG.html');
+				},
+				shanchu(id){
+					let _this = this;
+					if(window.confirm("确定要删除该商品?")){
+						$.getJSON(`http://127.0.0.1:8080/api/paimais/sc/${id}`,function(msg){
+							if(msg.code=="200"){
+								_this.$alert("删除成功！","系统提示");
+								_this.csy(1,3,_this.input.name,_this.input.ms,_this.input.kssj,_this.input.jssj,_this.input.qpj);
+							}else{
+								_this.$alert("删除失败！","系统提示");
+							}
+						})
+					}
+				},
+				cx(){
+					if(this.input.name==""){
+						this.input.name=null;
+					}
+					if(this.input.ms==""){
+						this.input.ms=null;
+					}
+					if(this.input.kssj==""){
+						this.input.kssj=null;
+					}
+					if(this.input.jssj==""){
+						this.input.jssj=null;
+					}
+					if(this.input.qpj==""){
+						this.input.qpj=null;
+					}
+					this.csy(1,3,this.input.name,this.input.ms,this.input.kssj,this.input.jssj,this.input.qpj);
+				},
+				csy(pagaNum,pageSize,name,ms,kssj,jssj,qpj){
+					let _this = this;
+					$.ajax(`http://127.0.0.1:8080/api/paimais/paimaio/${pagaNum}/${pageSize}/${name}/${ms}/${kssj}/${jssj}/${qpj}/${_this.sj}/${_this.data.aid}`,{
+						type:'post',
+						success(data){
+							console.log(data)
+							_this.page=data;
+							_this.zys=data.pages*10;
+							_this.table=data.list;
+						},
+						error(XMLHttpRequest, textStatus, errorThrown){
+							console.log(XMLHttpRequest.status);//状态码
+       						console.log(XMLHttpRequest.readyState);//状态
+       						console.log(textStatus);//错误信息
+						}
+					})
+				},
+				handleSizeChange(val) {
+			        console.log(`每页 ${val} 条`);
+			    },
+			    handleCurrentChange(val) {
+			        console.log(`当前页: ${val}`);
+			        this.csy(val,this.page.pageSize,this.input.name,this.input.ms,this.input.kssj,this.input.jssj,this.input.qpj);
+			    }
+			},mounted(){			
+				this.data = JSON.parse(window.sessionStorage.getItem("DATA"));
+				if(this.input.name==""){
+					this.input.name=null;
 				}
+				if(this.input.ms==""){
+					this.input.ms=null;
+				}
+				if(this.input.kssj==""){
+					this.input.kssj=null;
+				}
+				if(this.input.jssj==""){
+					this.input.jssj=null;
+				}
+				if(this.input.qpj==""){
+					this.input.qpj=null;
+				}
+				let date=new Date();
+				let rq = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+				this.sj=rq;	//获取到当前时间
+				this.csy(1,3,this.input.name,this.input.ms,this.input.kssj,this.input.jssj,this.input.qpj);
 			}
 		})
 	</script>

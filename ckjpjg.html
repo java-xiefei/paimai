@@ -31,14 +31,14 @@
 
 			<template>
 				<el-table :data="table" border style="width: 100%;" :row-style="{height:'32px'}" :cell-style="{padding:'0px'}" style="font-size: 10px">>
-					<el-table-column align='center' prop="name" label="名称" width="180" height="50">{{table.name}}</el-table-column>
-					<el-table-column align='center' prop="kssj" label="开始时间">{{table.kssj}}</el-table-column>
-					<el-table-column align='center' prop="jssj" label="结束时间">{{table.jssj}}</el-table-column>
-					<el-table-column align='center' prop="qpj" label="起拍价">{{table.qpj}}</el-table-column>
+					<el-table-column align='center' prop="auctionname" label="名称" width="180" height="50">{{table.auctionname}}</el-table-column>
+					<el-table-column align='center' prop="auctionstarttime" label="开始时间">{{table.auctionstarttime}}</el-table-column>
+					<el-table-column align='center' prop="auctionendtime" label="结束时间">{{table.auctionendtime}}</el-table-column>
+					<el-table-column align='center' prop="auctionstartprice" label="起拍价">{{table.auctionstartprice}}</el-table-column>
 					<el-table-column align='center' prop="cjj" label="成交价">{{table.cjj}}</el-table-column>
-					<el-table-column align='center' prop="maijia" label="买家">
+					<el-table-column align='center' prop="aname" label="买家">
 						<template slot-scope="temp">
-							<span style="color: red;">{{temp.row.maijia}}</span>
+							<span style="color: red;">{{temp.row.aname}}</span>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -50,14 +50,14 @@
 
 			<template>
 				<el-table :data="table2" style="width: 100%;" :row-style="{height:'32px'}" :cell-style="{padding:'0px'}" style="font-size: 10px">>
-					<el-table-column align='center' prop="name" label="名称" width="180" height="50">{{table2.name}}</el-table-column>
-					<el-table-column align='center' prop="kssj" label="开始时间">{{table2.kssj}}</el-table-column>
-					<el-table-column align='center' prop="jssj" label="结束时间">{{table2.jssj}}</el-table-column>
-					<el-table-column align='center' prop="qpj" label="起拍价">{{table2.qpj}}</el-table-column>
+					<el-table-column align='center' prop="auctionname" label="名称" width="180" height="50">{{table2.auctionname}}</el-table-column>
+					<el-table-column align='center' prop="auctionstarttime" label="开始时间">{{table2.auctionstarttime}}</el-table-column>
+					<el-table-column align='center' prop="auctionendtime" label="结束时间">{{table2.auctionendtime}}</el-table-column>
+					<el-table-column align='center' prop="auctionstartprice" label="起拍价">{{table2.auctionstartprice}}</el-table-column>
 					<el-table-column align='center' label="出价记录">
 						<template slot-scope="temp">
-							<div v-for="(ss,i) in temp.row.cjjl">
-								<span style="color: #0177A7;">{{ss.key}}</span><span>&nbsp;</span><span style="color: #0177A7;">{{ss.value}}</span>
+							<div v-for="(ss,i) in temp.row.tower">
+								<span style="color: #0177A7;">{{ss.aname}}</span><span>&nbsp;</span><span style="color: #0177A7;">{{ss.auctionprice}}元</span>
 							</div>
 						</template>
 					</el-table-column>
@@ -69,100 +69,32 @@
 		var ckjpjg = new Vue({
 			el: '#ckjpjg',
 			data: {
+				sj:'',
 				name: '张三',
-				table: [{
-					name: '国书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000',
-					cjj: '5000',
-					maijia: '张三'
-				}, {
-					name: '国书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000',
-					cjj: '5000',
-					maijia: '李四'
-				}, {
-					name: '国书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000',
-					cjj: '5000',
-					maijia: '王五'
-				}, {
-					name: '国书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000',
-					cjj: '5000',
-					maijia: '赵六'
-				}],
-				table2: [{
-					name: '国书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000',
-					cjjl: [{
-						key: '李四',
-						value: '400元'
-					}, {
-						key: '张三',
-						value: '300元'
-					}, {
-						key: '张晶',
-						value: '200元'
-					}]
-				}, {
-					name: '国书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000',
-					cjjl: [{
-						key: '李四',
-						value: '400元'
-					}, {
-						key: '张三',
-						value: '300元'
-					}, {
-						key: '张晶',
-						value: '200元'
-					}]
-				}, {
-					name: '国书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000',
-					cjjl: [{
-						key: '李四',
-						value: '400元'
-					}, {
-						key: '张三',
-						value: '300元'
-					}, {
-						key: '张晶',
-						value: '200元'
-					}]
-				}, {
-					name: '国书',
-					kssj: '2020-02-02 12:22:11',
-					jssj: '2020-02-02 12:22:11',
-					qpj: '2000',
-					cjjl: [{
-						key: '李四',
-						value: '400元'
-					}, {
-						key: '张三',
-						value: '300元'
-					}, {
-						key: '张晶',
-						value: '200元'
-					}]
-				}]
+				table: [],
+				table2: []
 			},
 			methods: {
-
+				csy(){
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/api/paimais/jieshu/${this.sj}`,function(res){
+						_this.table = res;
+					})
+				},
+				csy2(){
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/api/paimais/zx/${this.sj}`,function(res){
+					/*	console.log(res);*/
+						_this.table2=res;
+					})
+				}
+			},
+			mounted(){
+				let date=new Date();
+				let rq = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+				this.sj=rq;	//获取到当前时间
+				this.csy();
+				this.csy2();
 			}
 
 		})

@@ -74,7 +74,7 @@
 				<!--文件上传组件-->
 				<el-form-item label="拍卖品图片:" style="margin-left: 13px;" prop="fileList">
 					<el-col :span="10">
-						<el-upload class="upload-demo" :before-upload="handleBefore" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
+						<el-upload class="upload-demo" :limit="1" :before-upload="handleBefore" action="http://127.0.0.1:8080/api/paimais/sc" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
 							<el-button size="small" type="primary">点击上传</el-button>
 							<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
 						</el-upload>
@@ -109,7 +109,10 @@
 					tp: '',
 					ms: ''
 				},
+				id:'',
+				data:{},
 				fileList: [],
+				images:'',
 				rules: { //验证判断
 					name: [{
 						required: true,
@@ -161,11 +164,30 @@
 						trigger: 'change'
 					}]
 				},
-				fd: []
+				fd: [],
+				aa:'',
+				auction:{
+					auctionid:'',
+					aid:'',
+					auctionname:'',
+					auctionstartprice:'',
+					auctionupset:'',
+					auctionstarttime:'',
+					auctionendtime:'',
+					auctionpic:'',
+					auctiondesc:''
+				}
 			},
 			methods: { //前两个方法为上传文件的方法
 				handleRemove(file, fileList) {
 					console.log(file, fileList);
+					$.getJSON(`http://127.0.0.1:8080/api/paimais/sctp/${this.images}`,function(msg){
+						if(msg.code=="200"){
+							console.log("删除图片路径成功!")
+						}else{
+							console.log("删除图片路径失败!")
+						}
+					})
 				},
 				handlePreview(file) {
 					console.log(file);
@@ -173,6 +195,30 @@
 				handleBefore(file) {
 					console.log(file.name);
 					this.ruleForm.tp=file.name;
+				},
+				csy(){
+					let _this = this;
+					console.log(this.id)
+					$.getJSON(`http://127.0.0.1:8080/api/paimais/${this.id}`,function(res){
+						this.auction = res;
+						console.log(this.auction)
+						console.log(this.aa)
+						let auctionstarttime = res.auctionstarttime;	//数据库的开始时间
+						let auctionendtime = res.auctionendtime;		//数据库的结束时间时间
+						_this.ruleForm.name=res.auctionname;			//名称
+						_this.ruleForm.qpj=res.auctionstartprice;		//起拍价
+						_this.ruleForm.dj=res.auctionupset;				//低价
+						_this.ruleForm.date1=new Date(auctionstarttime).getTime();	//开始时间年月日
+						_this.ruleForm.date2=new Date(auctionstarttime).getTime();	//开始时间时分秒
+						_this.ruleForm.date3=new Date(auctionendtime).getTime();	//结束时间年月日
+						_this.ruleForm.date4=new Date(auctionendtime).getTime();	//结束时间时分秒
+						_this.ruleForm.tp=res.auctionpic;
+						_this.ruleForm.ms=res.auctiondesc;	//描述
+						_this.images=res.auctionpic;	//图片路径
+						_this.fileList.push({
+							url:`http://127.0.0.1:8080/images/${res.auctionpic}`
+						})
+					})
 				},
 				submitForm(formName) {
 					this.$refs[formName].validate((valid) => {
@@ -184,21 +230,58 @@
 							} else if(this.ruleForm.ms == "") {
 								this.$alert('请描述商品！', '系统提示');
 								return;
-							}
-							//验证通过
-							//自定义加载块
-							const loading = this.$loading({
-								lock: true,
-								text: '努力更新中....',
-								spinner: 'el-icon-loading',
-								background: 'rgba(0, 0, 0, 0.5)'
-							});
-							//延迟2秒，模拟网络延迟
-							setTimeout(() => {
-								//alert('submit!');
-								this.$alert('登录成功！', '系统提示');
-								loading.close(); //关闭加载块【非常重要】
-							}, 2000);
+							}else{
+								let d1 = new Date(this.ruleForm.date1);
+								let d2 = new Date(this.ruleForm.date2);
+								let d3 = new Date(this.ruleForm.date3);
+								let d4 = new Date(this.ruleForm.date4);
+        						let resDate1 = d1.getFullYear() + '-' + (d1.getMonth() + 1) + '-' + d1.getDate();
+								let resDate2 = d2.getHours()+":"+d2.getMinutes()+":"+d2.getSeconds();
+								let resDate3 = d3.getFullYear() + '-' + (d3.getMonth() + 1) + '-' + d3.getDate();
+								let resDate4 = d4.getHours()+":"+d4.getMinutes()+":"+d4.getSeconds();
+								
+								this.auction.auctionid=this.id;
+								this.auction.aid=this.data.aid;
+								this.auction.auctionname=this.ruleForm.name;
+								this.auction.auctionstartprice=this.ruleForm.qpj;
+								this.auction.auctionupset=this.ruleForm.dj;
+								this.auction.auctionstarttime=resDate1+" "+resDate2;
+								this.auction.auctionendtime=resDate3+" "+resDate4;
+								this.auction.auctionpic=this.images;
+								this.auction.auctiondesc=this.ruleForm.ms;
+								console.log(this.auction);
+								let _this = this;
+								$.ajax(`http://127.0.0.1:8080/api/paimais/xg`,{
+									type:'post',
+									contentType:'application/json',
+									data:JSON.stringify(_this.auction),
+									dataType:'json',
+									success(msg){
+										if(msg.code=="200"){
+											//验证通过
+											//自定义加载块
+											const loading = _this.$loading({
+												lock: true,
+												text: '努力更新中....',
+												spinner: 'el-icon-loading',
+												background: 'rgba(0, 0, 0, 0.5)'
+											});
+											//延迟2秒，模拟网络延迟
+											setTimeout(() => {
+												//alert('submit!');
+												_this.$alert('修改成功！', '系统提示');
+												loading.close(); //关闭加载块【非常重要】
+											}, 2000);
+										}
+										indexApp.showView("pmspgl.html");
+									},
+									error(XMLHttpRequest, textStatus, errorThrown){
+										console.log(XMLHttpRequest.status);//状态码
+			       						console.log(XMLHttpRequest.readyState);//状态
+			       						console.log(textStatus);//错误信息
+									}
+								});
+							}							
 						} else {
 							console.log('error submit!!');
 							//验证失败
@@ -207,6 +290,11 @@
 						}
 					});
 				}
+			},
+			mounted(){
+				this.data = JSON.parse(window.sessionStorage.getItem("DATA"));
+				this.id = JSON.parse(window.sessionStorage.getItem("xgid"));
+				this.csy();
 			}
 		})
 	</script>
